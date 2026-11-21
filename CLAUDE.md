@@ -1,17 +1,7 @@
-# Spirograph Engine — Build Notes
+# Spirograph build notes
 
-## What This Is
-Parametric curve visualizer for Precursor. Renders hypotrochoid and epitrochoid spirograph patterns on the 1-bit display using fixed-point integer math.
-
-## Key Decisions
-- **No floating-point**: All trig via 16.16 fixed-point with parabolic sin/cos approximation (1024 units per revolution)
-- **No PDDB/storage**: Pure visual app, no saved state needed
-- **No TRNG**: Deterministic curves, no randomness
-- **Precomputed points**: Curve is fully computed into Vec<(i16, i16)> before transitioning to Drawing state, avoiding per-frame computation
-- **Line segment rendering**: Points drawn as connected lines via gam.draw_line(), clipped to content area
-- **Capped iterations**: max 16,384 points per curve to prevent excessive computation
-
-## Architecture
-- 3 states: Menu, Drawing, Gallery
-- 10 presets covering both curve types
-- Fixed-point math module is self-contained and reusable for other visual apps (Lissajous, etc.)
+- `core/src/lib.rs`: one closed curve over `u` in one turn, angles `r' u` and `(R' -/+ r') u` with `R'=R/g`, `r'=r/g`. Scale and term sizes in Q16.16, one shift at the end. No `fp_div` per point.
+- Params invariant: hypo `r <= R-5`, epi `r <= R` (Cardioid); `step_big_r` and `toggle_kind` re-clamp.
+- Points computed from the index; `Pen::advance` yields each segment once; the shell draws only new segments per tick.
+- Pump runs only when foreground and `App::animating()`.
+- Tests are heavy-ish (the menu-grid test is ~20 s in debug): `cd core && cargo test`.
