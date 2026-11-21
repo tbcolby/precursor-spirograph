@@ -1,0 +1,14 @@
+{
+    "spirograph": {
+        "context_name": "spirograph",
+        "menu_name": {
+            "appmenu.spirograph": {
+                "en": "spirograph",
+                "en-tts": "spirograph",
+                "fr": "spirograph",
+                "ja": "spirograph",
+                "zh": "spirograph"
+            }
+        }
+    }
+}
